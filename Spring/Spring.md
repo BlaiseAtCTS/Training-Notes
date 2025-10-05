@@ -1,6 +1,9 @@
 # Spring Notes
 https://www.baeldung.com/spring-tutorial
 
+form action --> to different page registration (/registration)
+onclick --> calls js functions
+
 ### IoC:
 Transfer control of objects to framework.
 Advantage: decoupling the execution of a task from its implementation.
@@ -179,6 +182,11 @@ All methods with @Value will be executed even if method not called.
 
 If you mark a method(not variable) with @Required, it will make sure the value of method parameter is not null before u use the bean.
 
+## Converter interface:
+All values in property file is stored as String.
+@Value sends String values from property files to bean values, but if target value is given as other types, it tries to convert String to the target type using Converter Interface.
+We can implement Converter and @Override the convert(source type, target type) method to tell @Value to perform custom conversion.
+
 ## AOP:
 @Before, @After, @Around
 @After - execute Aspect method before control returns to Main class.
@@ -200,8 +208,94 @@ Asterik(*) means select all methods (or) all return types.
 @Around("execution(void EasyBank.doWithdraw(int amount)) || execution(void EasyBank.doDeposit(int amount))")
 
 ## What are these?
-@RequestMapping?
+@RequestMapping? - POST & GET
+SpringExpressionLanguage - "${home.location}"
 GetMapping("\", "\spring")?
 CORS?
 Maven Wrapped (mvnw)
 @PostConstruct
+
+## @Entity
+@Table(name="car")
+
+## Relationships:
+https://www.youtube.com/watch?v=VLlDaIcb3jE
+
+If you add relationship annotation, it creates sub tables with the relationships, like student_laptop. To prevent this, we can do mapped by inside @ManyToOne().
+
+When using @OneToMany, you cant store a list of laptops in student. so student_laptop table is created.
+
+When using @ManyToOne, you can store the student PK as a column in laptop table.
+
+Since, student table's PK is already mapped to laptop table, you can prevent it from creating student_laptop talbe by mentioning @OneToMany(mappedBy="user");
+
+@OneToOne adds a column with PK in one table.
+
+## @Controller, View Resolver:
+```
+@ResponseBody
+@RequestMapping("/cricketbat")
+public String giveCricketBat() {
+  return "returning cricket bat";
+}
+```
+This returns the String. Without @ResponseBody, it checks for the file called returning cricket bat. Here you can give "/WEB-INF/view/returnCricketBat.jsp" --> this is a view file.
+
+WEB-INF: views inside it cannot be viewed and modified by bad actors.
+
+Client: /home.come/cricketbat -> Dispatcher Servlet: /home.com/* -> Controller: return "MRFCricketBat" (this is the base name, a view file) --> Dispatcher Servlet (To help Dispatcher understand what is MRFCricketBat, we use View Resolver) --> Client
+
+![View Resolver](viewResolver.png)
+
+View Resolver adds the prefix and suffix to base name.
+prefix: /WEB-INF/view/
+suffix: .jsp
+
+We use InternalResourceViewResolver extends UrlBasedViewResolver --> which has prefix and suffix variables.
+
+The ViewResolver is responsible for:
+
+Mapping logical view names (like "showPage") returned by controllers
+To actual JSP files (like /WEB-INF/views/showPage.jsp)
+
+## @ModelAttribute, ModelMap:
+Model: A container for data, that you send to the view. Its a temporary data store to send from controller to view. *Not to be confused with MVC Model @Entity.
+
+ModelMap: its like a Hashmap (a container), to store data to a name and use it in jsp. ModelMap creates a model with a name to be used in jsp.
+```
+@PostMapping("")
+public String messageMethod(ModelMap map) {
+  map.addAttribute("message", "Welcome World");
+  return "home";
+}
+```
+
+### Method level @ModelAttribute
+This will be called before every other RequestMapping and will be called for each RequestMapping.
+```
+@ModelAttribute("register")
+public List<String> options() {
+  List<String> list = new ArrayList<>(Arrays.asList("cat", "dog", "elephant"));
+  return list;
+}
+```
+
+### Parameter level @ModelAttribute
+```
+public String sportsRegistration(@ModelAttribute("registration") Registration registration) {
+
+}
+```
+This puts the form values to Registration object and also creates a ModelMap with registration as name, to be used in jsp.
+
+## Properites file:
+@PropertyScan("goldRateDetails.properties") --> in @Configuration
+@Value("#{${gold.rate}}") --> since gold.rate is a map
+
+Advanced Java
+SQL
+Angular 30% (concepts alone)
+SpringBoot @RestController
+Functional Testing
+JIRA
+Agile

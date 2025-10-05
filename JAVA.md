@@ -262,6 +262,121 @@ if(value.isPresent()) {
 value.orElseThrow()
 ```
 
-## Properites file:
-@PropertyScan("goldRateDetails.properties") --> in @Configuration
-@Value("#{${gold.rate}}") --> since gold.rate is a map
+## package-private
+if you dont give access modifer, a class defaults to package private.
+Accessible only within same package.
+```
+class Helper { // no need access modifier.
+    void print() {
+
+    }
+}
+public class Main {
+
+}
+```
+Can have only one top-level class(public class) in a file.
+
+## Nested class / Inner class:
+private inner class cant be accessed outside the outer class.
+```
+public class Main {
+    public class Helper { // can be private or public. can be static or non static.
+        void print() {
+
+        }
+    }
+}
+```
+If nested class is non static, it has a reference to the outer class object that created it. CONS: This can lead to memory leak, if inner class instance outlives the outer class instance.
+if nested class is static, cannot access instance variable from inside it.
+```
+public class Outer {
+    private int instanceValue = 42;
+    private static int staticValue = 40;
+    public static class StaticNested {
+        println(instanceValue); --> doesnt work
+        println(staticValue); --> works
+    }
+    public class InstanceNested {
+        println(instanceValue); --> works
+        println(staticValue); --> works
+    }
+    public static void main() {
+        StaticNested sn = new StaticNested(); --> no need to mention Outer
+        Outer o = new Outer(); --> even if change this to null, InstanceNested still has a reference to it.
+        Outer.InstanceNested in = o.new InstanceNested();
+    }
+}
+```
+
+## 
+Object class:
+boolean - .equals(obj)
+int - .hashCode()
+String - toString() --> overriden inside class, by default returns classname@hashcode
+
+Objects class:
+int - .hash(this.name, this.age)
+int - .compare()
+
+String class:
+boolean - .equals(name) / .equalsIgnoreCase()
+int - .compareTo(name) / .compareToIgnoreCase()
+
+Collections class:
+void - .sort(numsList) / (numsList, customCompare)
+void - .reverse()
+
+List interface:
+void - .sort((Obj a, Obj b) -> {return a.name.comapreTo(b.name)}) / (customCompare) -> Comparator
+List - .revered()
+
+Arrays class:
+List - .asList(12, 13, 14)
+
+Comparator interface:
+int - .compare(int i, int j) -> returns 1 if i > j, if i < y return -1, if i == y return 0
+boolean - .equals(Object obj)
+
+Integer class extends Number and implements Comparable:
+int - .compare(int x, int y) -> return 1 if x > y, if x < y return -1, if x == y return 0
+int - .compareTo() --> Not same as one in Comparable interface. This calls compare(). This is not static method, so ignore it.
+
+Comparable interface:
+.compareTo(T)
+Integer, String etc. class implements Comparable, so Collections.sort(numList) works, but not custom class which doesnt implement comparator. numList.sort() needs comparator anyway (because it expects comparator).
+
+Collection interface:
+Stream<T> - .stream()
+
+Stream interface:
+Stream<T> - Stream.of(s.name, s.phone)
+Stream<T> - .sorted() -> for objects, .sorted(Comparator.comparing(s -> s.name)) 
+List - .toList()
+Stream<T> - .filter(Predicate)
+Stream<T> - .map(Function)
+Stream<T> - .flatMap(s -> Stream.of(s.name, s.phone))
+.collect(Collectors.toList())
+long - .count
+T - .reduce(accumulator, Binary operator)
+
+numList.stream().sorted().toList() --> stream() & sorted() returns Stream<T>
+
+Function interface (FI):
+R - apply(T) -> takes one function input and returns result of the function.
+
+Predicate interface (FI):
+boolean - test(T) -> tests a condition
+
+List interface extends SequencedCollection interface extends Collection interface extends Iterable interface
+Collections class
+
+## Stream:
+stream's intermediate operations only start to execute when we call a terminal operation(which returns not a stream).
+
+## Type parameters:
+<T> – the type of the input to the function
+<R> – the type of the result of the function
+
+*FI = Functional Interface

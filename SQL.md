@@ -34,3 +34,70 @@ Write a query to display the customer ID, day name of purchase, and total amount
 Give an alias name as 'DAY_OF_PURCHASE' for the day name of purchase and 'TOTAL_PRICE' for the total amount paid. Round off the total amount paid to zero decimal places.
 
 Sort the records based on TOTAL_PRICE in descending order.
+
+## CONSTRAINTS:
+Where, Between .. AND, Not Between .. AND, !=.
+
+Like "ABC", Not LIKE: %AT%, AN_
+```
+SELECT title, director FROM movies 
+WHERE title LIKE "Toy Story%";
+
+(col used in like or = dont have to be in select)
+Comparing String we can use Like or =: (= is case sensitive tho)
+select title from movies
+where director like "John Lasseter"
+```
+IN("A", "B"), NOT IN
+
+Limit, Offset
+
+DISTINCT for 2 columns:
+```
+select distinct b.building_name, e.role from buildings b
+left join employees e
+on b.building_name = e.building
+```
+
+IS / IS NOT NULL
+
+select city, count(customer_name) from customers --> here customer_name as to be inside aggregate func
+group by city
+
+select * from employees
+where revenue_generated < 
+(select avg(revenue_generated) from employees where employees.department = )
+
+Correlation Subqueries:
+```
+SELECT *
+FROM employees
+WHERE salary > 
+   (SELECT AVG(revenue_generated)
+    FROM employees AS dept_employees
+    WHERE dept_employees.department = employees.department);
+```
+
+```
+SELECT
+  e.name,
+  e.department,
+  e.revenue_generated,
+  d.avg_dept_revenue
+FROM
+  employees AS e
+JOIN
+  (
+    -- Non-correlated subquery calculates average revenue for ALL departments
+    SELECT
+      department,
+      AVG(revenue_generated) AS avg_dept_revenue
+    FROM
+      employees
+    GROUP BY
+      department
+  ) AS d
+  ON e.department = d.department -- Join is on the department field
+WHERE
+  e.revenue_generated < d.avg_dept_revenue;
+```

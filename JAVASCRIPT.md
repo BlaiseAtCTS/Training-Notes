@@ -1,4 +1,5 @@
 # Javascript Notes
+Browser has inbuilt v8 engine to run js. We use node js(a server) to run js in local.
 Only 1 integer type: Number,
 NaN(Not a Number) is Number type :\
 'var' is the old way of using variables, now we use let and const.
@@ -72,7 +73,7 @@ arr.find((elem) => {return elem%2==0}) --> returns 1st element which satisfies t
 arr.some((elem) => {return elem%2==0}) --> returns true if there are some elements that satisfy the condition.
 arr.every((elem) => {return elem%2==0}) --> returns true if every element satisfies the condition.
 arr.map((elem) => {return 1}) --> uses a callback function. All values in arr is changed to 1 and returned. Changes the given array unlike filter which just checks a condition.
-arr.reduce()
+arr.reduce((accumulator, currentValue) => {}, 0);
 #### map method:
 ```
 Similar to forEach,
@@ -153,7 +154,7 @@ const cat = {
     name: 'Blue',
     meow() {
         console.log(name) -> wont work, name is searched as a variable.
-        console.log(this=.name) -> works
+        console.log(this.name) -> works
     }
 }
 ```
@@ -178,6 +179,8 @@ set operations are O(1).
 const seen = new Set();
 seen.has(n)
 seen.add(n)
+.delete(n)
+.clear()
 
 ### Hashmap:
 O(1).
@@ -186,10 +189,11 @@ map.set(key, value)
 map.get(key)
 map.delete(key)
 map.has(key)
+.clear()
 Iteration: map.forEach() / for(n of map)
 
 ### DOM:
-Html + Css goes in and js objects come out. The relation between different html elements liked div inside another div is captured by a tree structure in js. The root of the tree is Document Object (similar to window).
+Html + Css goes in and js objects come out. The relation between different html elements like div inside another div is captured by a tree structure in js. The root of the tree is Document Object (similar to window).
 #### Element properties:
 Eg. JS converts html tag 'img' into dom. So the attributes like 'src' can be accessed from dom using: img.src = "new image url"
 
@@ -227,7 +231,7 @@ getElementById returns a reference to the element with that id.
 ```
 ```
 document.getElementsByTagName('p') --> in inspect, it provides html collection with js objects (which looks like an array, but not an js array). can traverse it like an array. If no element is found, it returns empty HTML collection.
-document.getElementByClassName('square') --> can traverse it like an array. If no element is found, it returns empty HTML collection.
+document.getElementsByClassName('square') --> can traverse it like an array. If no element is found, it returns empty HTML collection.
 ```
 ```
 document.querySelector('#banner') / ('.square') / ('h1') --> selects 1st element (but you can do ('img:nth-of-type(2)') and get 2nd element), returns element itself as a js object.
@@ -333,7 +337,8 @@ eventSelection.addEventListener("change", () => { --> eventSelection is select t
 ### CSS Selctors:
 document.getElemetById('spl').style.color=red;
 document.getElementById('check').checked --> returns true or false(boolean)
-document.querySelector('#check.checked')
+document.querySelector('#check.checked') --> input with id=check and class=checked
+document.querySelector('#check:checked')
 document.querySelector('input[type="checkbox"]:checked')
 
 .checked --> js property access
