@@ -380,3 +380,5 @@ stream's intermediate operations only start to execute when we call a terminal o
 <R> – the type of the result of the function
 
 *FI = Functional Interface
+
+Can override default method, but not static methods in interface.

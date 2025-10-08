@@ -71,3 +71,9 @@ Equivalence partitioning and Boundary values analysis
 notification - priority feature
     - email notification
     - sms notification
+
+Smoke testing is done in highlevel. It will only involve one flow to test. Will touch up each component (high coverage) but not deep.
+
+Sanity will check whether a particular module is working or not. Depth but not much coverage. Eg. payment module added, test diff payment methods.
+
+Regression - test that newly added things dont affect others.
