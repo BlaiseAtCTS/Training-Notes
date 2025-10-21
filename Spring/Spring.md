@@ -258,6 +258,12 @@ The ViewResolver is responsible for:
 Mapping logical view names (like "showPage") returned by controllers
 To actual JSP files (like /WEB-INF/views/showPage.jsp)
 
+## Cyclic Redundancy:
+When Bean A depends on Bean B and
+Bean B depends on Bean A.
+The dependent class must be a @Bean for spring to inject dependencies into it.
+If its not a @Bean, spring wont be able to inject dependencies into it.
+
 ## @ModelAttribute, ModelMap:
 Model: A container for data, that you send to the view. Its a temporary data store to send from controller to view. *Not to be confused with MVC Model @Entity.
 

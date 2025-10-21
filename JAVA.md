@@ -382,3 +382,36 @@ stream's intermediate operations only start to execute when we call a terminal o
 *FI = Functional Interface
 
 Can override default method, but not static methods in interface.
+
+## FileInputStream:
+To read from properties file:
+Properties class
+    void - load(InputStream)
+Since Properties class load func takes InputStream, we have to read properties file as InputStream:
+```
+FileInputStream fis = new FileInputStream("config.properties");
+Properties prop = new Properties();
+prop.load(fis)
+int name = prop.getProperty("item-name");
+```
+
+## SimpleDateFormat, Calender:
+```
+try {
+    SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
+    SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    Date date = inputFormat.parse(Date);
+    String formattedDate = outputFormat.format(date);
+} catch(Exception e) {}
+```
+setLenient
+
+## Reference type and Object type:
+Java makes a list of things that we can implement for a variable by looking at its reference type.
+Animal a = new Dog();
+If Dog as a method called bark, which is not declared in Animal, you can't do a.bark().
+You have to typecase like:
+Dog d = (Dog) a;
+
+## Method level should be initialized:

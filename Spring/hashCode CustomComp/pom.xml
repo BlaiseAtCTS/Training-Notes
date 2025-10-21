@@ -21,7 +21,12 @@
             <artifactId>selenium-java</artifactId>
             <version>LATEST</version>
         </dependency>
-
+        <!-- Cucumber JVM -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>7.29.0</version>
+        </dependency>
     </dependencies>
 
 </project>
