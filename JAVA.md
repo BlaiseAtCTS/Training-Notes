@@ -1,5 +1,6 @@
 # JAVA Notes
 No value type string in Java, because strings store lots of values (int, double only store single value)
+There must be a static void main method to run a Java program.
 
 Heap and Stack memory.
 Heap: dynamic memory allocation.
@@ -73,6 +74,9 @@ Collections Hierarchy: https://techvidvan.com/tutorials/wp-content/uploads/sites
 list.size()
 ArrayList<String> list = new ArrayList<>(Arrays.asList("Apple", "Banana", "Cherry"));
 ```
+```
+String - Arrays.toString(arr);
+```
 Store values of the same type.
 Part of java.util
 ArraList<Integer> list = new ArrayList<>(); --> Type is given as Integer instead of int.
@@ -112,7 +116,25 @@ for(Integer num: list) {
 ### Class:
 Objects are always created using a constructor.
 If the programmer does not define a constructor for a class, Java automatically creates a default one for it. A default constructor is a constructor that doesn't do anything apart from creating the object.
-class is public, class variables are private, construcutor is public, methods are public.
+class is public, class variables are private, constructor is public, methods are public.
+
+Non-static variables inside a class are initialized when class object is created.
+so, 
+```
+public class RegisterSteps {
+    private WebDriver driver = DriverFactory.getDriver(); -> this is called immediately when new RegisterSteps() is called.
+}
+```
+
+#### Order of initialization:
+Instance field : 
+    Initialized automatically when a object is created.
+Static field:
+    Initialized once when class is loaded.
+Constructor:
+    Runs after instance fields are initialized.
+Methods;
+    Only run when explicitly called.
 
 ### Exceptions:
 ArrayIndexOutOfBounds
@@ -319,10 +341,12 @@ String - toString() --> overriden inside class, by default returns classname@has
 Objects class:
 int - .hash(this.name, this.age)
 int - .compare()
+boolean - .equals(a, b) --> safe checks if element is null before checking equality.
 
 String class:
 boolean - .equals(name) / .equalsIgnoreCase()
 int - .compareTo(name) / .compareToIgnoreCase()
+boolean - .isEmpty() -> checks if length is 0
 
 Collections class:
 void - .sort(numsList) / (numsList, customCompare)
@@ -383,7 +407,7 @@ stream's intermediate operations only start to execute when we call a terminal o
 
 Can override default method, but not static methods in interface.
 
-## FileInputStream:
+## FileInputStream, File Handling:
 To read from properties file:
 Properties class
     void - load(InputStream)

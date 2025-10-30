@@ -1,5 +1,5 @@
 # Automation Testing Notes
-By.id("") -> have to use doulbe quotes.
+By.id("") -> have to use double quotes.
 
 ## Why AT?
 Increased speed and efficiency.
@@ -30,6 +30,10 @@ If Dog as a method called bark, which is not declared in Animal, you can't do a.
 You have to typecase like:
 Dog d = (Dog) a;
 
+*Make sure to also close WebDriverWait when doing driver.quit().
+*A WebDriverWait object is initialized with a specific WebDriver instance (It is linked to that Session ID).
+*So, if you do driver.quit() in 1st example scenario and use the same wait in 2nd example scenario, you will get NoSuchSessionException.
+
 ### Selenium Architecture.
 A driver like JDBC driver.
 To automate functional testing.
@@ -59,10 +63,13 @@ WebElement fullName = driver.findElement(By.cssSelector("#fullName")) -> full na
 
 WebElement submit = driver.findElement(By.cssSelector("input[type='submit']"))
 
+By.linkText("")
+
 fullName.sendKeys("Adam")
 reg-no.sendKeys("2")
 submit.click()
 
+driver.close() -> current window will close, will quit if its the only window.
 driver.quit() -> browser will close
 
 ### 0th Commands:
@@ -154,6 +161,11 @@ https://www.toolsqa.com/selenium-webdriver/drag-and-drop-in-selenium/
 ```
 actions.click(dateInput).sendKeys(formattedDate).perform();
 ```
+### Keyboard Input:
+```
+Actions actions = new Actions(driver);
+actions.keyDown(Keys.CONTROL).sendKeys("a").keyUp(Keys.CONTROL).perform(); // Select all text
+```
 
 ### moveToElement:
 actions.moveToElement(element)
@@ -185,6 +197,21 @@ If you want to enter value in JavascriptExecutor, you send it using arguments[]:
 WebElement emailElem = driver.findElement(By.xpath("//input[@id='email']"));
 exec.executeScript("arguments[0].value=arguments[1]", emailElem, "george@gmail.com");
 ```
+### Trigger on change event using JavaScript Executor:
+```
+JavascriptExecutor js = (JavascriptExecutor) driver;
+js.executeScript("arguments[0].value = arguments[1]", dobElement, dob);
+
+// JavascriptExecutor to invoke the calculateAge method, which is present in the onchange event of Dob on the web page for calculating the age.
+js.executeScript("arguments[0].dispatchEvent(new Event('change'))", dobElement);
+(or)
+js.executeScript("arguments[0].onchange()", dobElement);
+```
+### Another way to click button, when normal click doesn't work:
+```
+executor.executeScript("arguments[0].scrollIntoView(true);", DriverManager.get().findElement(registerButton));
+executor.executeScript("arguments[0].click();", DriverManager.get().findElement(registerButton));
+```
 
 ## To implement two quotations:
 exec.executeScript("document.querySelector(\"input[type='submit']\").click()");
@@ -196,19 +223,6 @@ Advantages of using TestEngine over JUnit.
 @Test - to define a specific test case.
 @BeforeTest - initialize WebDriver (void init()).
 @AfterTest - (void tearDown()). Works like finally, driver.quit().
-
-## Selenium Exceptions (Important for Exam):
-Know what each exception do.
-WebDriverException -> parent of all exception (Base exception).
-
-Kinds of exception under WebDriverException:
-InvalidElementStateException
-ElementNotInteracableException
-NotFoudnException
-SessionNotCreatedException
-
-NoSuchElementException -> when wrong element id is given and selenium is unable to find it.
-TimeOutException - if time runs out
 
 ## Dynamic Locator:
 When you dont have any id attribute for an element, we can use XPath.
@@ -232,7 +246,7 @@ Selenium checks the currently displayed DOM, if DOM elements change (like ad ban
 The default page load timeout in selenium webdriver is 300 seconds. If page doesnt get load in this time, it will throw TimeoutException.
 
 ```
-Thread.sleep(1000) -> Not related to selenium (don't use)
+Thread.sleep(1000) -> Not related to selenium (don't use, stops all browser loadings, so dynamic data wont be fetched)
 ```
 
 ### Implicit Wait:
@@ -260,9 +274,12 @@ Within the 10 seconds, every 500ms it will poll, whether the condition is satisf
 
 ```
 WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-wait.until(ExpectedConditions.elementToBeClickable(targetInput))
-
+wait.until(ExpectedConditions.elementToBeClickable(targetInput)) -> internally checks isDisplayed and isEnabled
+wait.until(ExpectedConditions.alertIsPresent());
 wait.until(ExpectedConditions.visibilityOf(billShow));
+ExpectedConditions.urlToBe(userDashboardPageUrl())
+
+ExplicitWait.getWait().until(ExpectedConditions.not(ExpectedConditions.urlToBe(userDashboardPageUrl())));
 
 WebElement billShow = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("billShow")));
 ```
@@ -410,6 +427,8 @@ local-name is like input type but can be used for any name in the html.
 ## Test Validation Assertion:
 Always user Assert in interviews.
 
+Assert is part of Junit.
+
 Soft Assert - not recommended mostly because it might waste time (All assert is validated)
 Hard Assert - by default (If first assert fails, program ends)
 
@@ -420,9 +439,13 @@ Assert.assertEquals(actualAccountNumber, expectedAccountNumber) -> we perform va
 
 assertTrue()
 assertFalse()
-assertEquals(s.generatePassword(), "146EEEEml");
+assertEquals(s.generatePassword(), "146EEEEml"); -> checks with .equals()
 assertNull()
-assertSame(ins.size(), 3);
+assertNotNull()
+assertSame(ins.size(), 3); -> checks with ==
+assertNotSame()
+assertNotNull()
+fail(message) -> all asserts can have message that will be displayed when assert fails.
 
 ## Report:
 Html page
@@ -624,10 +647,92 @@ afterTest
 afterSuite -> executed if all other before it is successful.
 
 ## POM:
-@FindBy(id = "id")
+https://youtu.be/9xRN-rANwKw?si=1MH5feZFBsiKHitq
+
+Page Object Model:
+To represent each page as a class and all the elements that you need to locate as elements.
+
+Without Page Factory:
+private By userName = By.id("username"); -> here you have to use driver.findElement() each time.
+
+With Page Factory:
+Lazy Loading.
+Can use @CacheLookup to cache the location of element to a variable to prevent it from looking up each time you use it.
+
+@FindBy(id = "id") -> searches the elements only once, you dont have to locate element each time you use it.
 private WebElement emailId;
 
 public SetFormValues(WebDriver driver) {
     this.driver = driver;
-    PageFactory.initElements(driver, this);
+    PageFactory.initElements(driver, this); -> initialized all the elements with @FindBy.
 }
+
+## Methods you can use with any driver.findElement(), Select & Assert:
+.isEmpty()
+.isDisplayed()
+
+ExpectedCondtions.visibilityOf()
+ExpectedCondtions.invisibilityOf()
+
+selectByVisibleText
+selectByValue
+
+## ThreadLocal:
+
+
+## Selenium Exceptions (Important for Exam):
+- Know what each exception do.
+WebDriverException -> parent of all exception (Base exception).
+
+Kinds of exception under WebDriverException:
+InvalidElementStateException
+ElementNotInteractableException
+NotFoundException
+SessionNotCreatedException
+
+InvalidArgumentException
+    eg. invalid url is given in get().
+UnhandledAlertException
+    eg. closing the browser when a alert popped.
+StaleElementReferenceException
+    eg. sendKeys() to a input A and then navigate() to another page, then navigate().back() and try to sendKeys() to the same input A.
+    (Selenium lose the locator if you navigate to another page).
+InvalidSelectorException
+    when using XPath or cssSelector with invalid syntax. Eg. By.xpath("//button[@value='Searchabc']]") -> syntax error.
+NoSuchElementException
+    when wrong element id is given and selenium is unable to find it. Eg. By.xpath("//button[@value='Searchabc']") -> Searchabc doesn't exist.
+JavascriptException
+    eg. when syntax inside executeScript is wrong.
+TimeOutException
+    if time runs out.
+
+## Read properties file:
+```
+public class ReadPropertiesFile {
+    public static void main(String[] args) {
+        Properties properties = new Properties();
+        try {
+            // Specify the path to the properties file
+            FileInputStream fileInput = new FileInputStream("config.properties");
+            
+            // Load the properties file
+            properties.load(fileInput);
+            
+            // Access properties
+            String browser = properties.getProperty("browser");
+            String url = properties.getProperty("url");
+            String timeout = properties.getProperty("timeout");
+            
+            // Print the values
+            System.out.println("Browser: " + browser);
+            System.out.println("URL: " + url);
+            System.out.println("Timeout: " + timeout);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## Data Table:

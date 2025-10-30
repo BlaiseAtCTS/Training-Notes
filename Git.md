@@ -16,3 +16,12 @@ local is ahead of remote (local log is ahead of remote log) -> direct push
 remote is ahead of local (remote log is ahead of remote log) -> direct pull
 
 latest local log is diff from latest remote log(merge conflict) -> git pull(merge conflict will be given in the file, you can edit it there -> this will cause you to create a new log, which will be ahead of both remote log & local log) -> so direct push
+
+## Stash:
+git stash / git stash save -> move changes to stash. (stage and unstaged files)
+git stash -u -> stash will include untracked files (git doesnt know these files exist, eg. new files in local).
+git stash pop -> bring stashed changes back.
+git stash apply -> apply stashed changes to multiple branches, by keeping stashed files in stash.
+git stash list -> bc you can stash multiple times, it has its own stash log.
+git stash drop {stash name}
+git stash clear

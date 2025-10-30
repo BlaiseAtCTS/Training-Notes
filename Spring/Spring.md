@@ -305,3 +305,6 @@ SpringBoot @RestController
 Functional Testing
 JIRA
 Agile
+
+## ModelMapper:
+Parse Dto to POJO class, instead of manually mapping dto to pojo.
