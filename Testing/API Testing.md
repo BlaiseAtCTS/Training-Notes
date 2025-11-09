@@ -43,6 +43,18 @@ RestAssured
     .post(endpoint)
     .then() -> gives a validatable response. eg. then().statusCode(200).body("name", equalTo("John Doe")) : checks if response status code is 200 and name.
 ```
+```
+RestAssured
+    .given()
+    .baseUri("http://")
+    .body()
+    .when()
+    .post(endpoint)
+    .then()
+    .statusCode(200)
+    .extract()
+    .response();
+```
 
 ## Payload Object to JSON, Serialization:
 When we make Payload Object like RegistrationData and use jackson to turn it into json, we need getters inside RegistrationData class to map variables to json keys.

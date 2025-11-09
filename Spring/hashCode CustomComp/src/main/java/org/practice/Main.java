@@ -69,6 +69,8 @@ public class Main {
         Student s2 = new Student("Blaise", 1);
         Student s3 = new Student("Adam", 2);
         Student s4 = new Student("Abel", 0);
+        List<Student> list1 = new ArrayList<>();
+        Collections.sort(list1);
 
         String str1 = new String("Blaise");
         String str2 = new String("Blaise");

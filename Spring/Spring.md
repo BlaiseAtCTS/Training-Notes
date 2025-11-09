@@ -143,6 +143,15 @@ This single annotation is equivalent to using @Configuration, @EnableAutoConfigu
 When we run this Spring Boot application, it will automatically scan the components in the current package and its sub-packages.
 
 ## Lifecycle:
+Bean Lifecycle:
+![Bean Lifecycle](image-5.png)
+
+### Difference between Instantiation and Initialization:
+Instantiation is when Java allocates memory and constructs the object using new keyword.
+  Constructor comes under Instantiation phase.
+Initialization is setting up the internal fields after creation.
+  @PostConstruct comes under Initialization phase.
+
 https://www.baeldung.com/spring-autowire
 
 1) Component Scan is done via @SpringBootApplication or @ComponentScan.
@@ -151,9 +160,17 @@ https://www.baeldung.com/spring-autowire
 Constructors of @Components classes are called to create class objects.
 If the @Component class has other class objects as arguments, @Autowired provides those objects if they are in Spring container, else it throws error "No qualifying bean was found". *
 If @Bean is set as @Lazy, then object creation is done during getBean().
+  @Component
+  @Lazy
+  (or)
+  @Autowired
+  @Lazy
+  (or)
+  app.setLazyInitialization(true) -> in Main class.
 If @Bean scope is prototype, then only bean metadata is stored in Application Context, no object.
 
 *You can do @Autowired(required=false)
+  so it wont throw NoSuchBeanDefinitionException even if autowired class bean not found.
 
 public api frontend with js, html, css.
 no fancy ui, just functionalities.
@@ -185,7 +202,7 @@ If you mark a method(not variable) with @Required, it will make sure the value o
 ## Converter interface:
 All values in property file is stored as String.
 @Value sends String values from property files to bean values, but if target value is given as other types, it tries to convert String to the target type using Converter Interface.
-We can implement Converter and @Override the convert(source type, target type) method to tell @Value to perform custom conversion.
+We can implement Converter<source type, target type> and @Override the convert method to tell @Value to perform custom conversion.
 
 ## AOP:
 @Before, @After, @Around
@@ -209,11 +226,14 @@ Asterik(*) means select all methods (or) all return types.
 
 ## What are these?
 @RequestMapping? - POST & GET
-SpringExpressionLanguage - "${home.location}"
+SpringExpressionLanguage - "#{}" - Spring evaluates it during runtime.
+  @Value("#{discount.getDiscount()}")
+    -> calls @Component("discount")'s getDiscount() method.
+Property Placeholder - "${}"
 GetMapping("\", "\spring")?
 CORS?
 Maven Wrapped (mvnw)
-@PostConstruct
+@PostConstruct & @PreDestroy
 
 ## @Entity
 @Table(name="car")
@@ -258,9 +278,17 @@ The ViewResolver is responsible for:
 Mapping logical view names (like "showPage") returned by controllers
 To actual JSP files (like /WEB-INF/views/showPage.jsp)
 
-## Cyclic Redundancy:
+## Cyclic / Circular Dependency:
 When Bean A depends on Bean B and
 Bean B depends on Bean A.
+It means they are tightly coupled, maybe make a common interface.
+
+If Bean A -depends on-> Bean B -> Bean C,
+  Spring will create C, then B and add C as dependency, then A and add B as dependency.
+
+If both beans are managed by Spring and they are injected with field injection, then it will be automatically solved by spring, as it first instantiates the classes and then adds dependencies.
+But if the beans are injected using constructor injection, then it will throw BeanCurrentlyInCreationException, since dependency is in instantiation phase now, and dependency class is not yet instantiated.
+
 The dependent class must be a @Bean for spring to inject dependencies into it.
 If its not a @Bean, spring wont be able to inject dependencies into it.
 
@@ -297,6 +325,8 @@ This puts the form values to Registration object and also creates a ModelMap wit
 ## Properites file:
 @PropertyScan("goldRateDetails.properties") --> in @Configuration
 @Value("#{${gold.rate}}") --> since gold.rate is a map
+
+@Value works like @Autowired(runs after constructor)
 
 Advanced Java
 SQL

@@ -26,6 +26,7 @@ Having --> Its like WHERE but for Group By
 
 ### ifnull:
 ifnull(price, quantity)
+CREATE TABLE IF NOT EXISTS
 
 # QUESTIONS:
 Purchase Price Based On Customer:
@@ -34,6 +35,15 @@ Write a query to display the customer ID, day name of purchase, and total amount
 Give an alias name as 'DAY_OF_PURCHASE' for the day name of purchase and 'TOTAL_PRICE' for the total amount paid. Round off the total amount paid to zero decimal places.
 
 Sort the records based on TOTAL_PRICE in descending order.
+
+*There is no full outer join in mysql, we can use left join union right join.
+
+## Inner Query:
+select * from (select * from movies
+order by year asc
+limit 5) order by title asc;
+
+![Outter Join](image.png)
 
 ## CONSTRAINTS:
 Where, Between .. AND, Not Between .. AND, !=.
@@ -61,6 +71,7 @@ on b.building_name = e.building
 
 IS / IS NOT NULL
 
+*group by should have some aggregate with it
 select city, count(customer_name) from customers --> here customer_name as to be inside aggregate func
 group by city
 

@@ -1,5 +1,5 @@
 # Cucumber Notes
-TDD (Test-Driver Development) -> functional testing etc. (only technical people can understand)
+TDD (Test-Driven Development) -> functional testing etc. (only technical people can understand)
 BDD (Behavior-Driven Development) (anyone can understand feature file)
 
 The core philosophy of BDD and Cucumber is that all scenarios should be independent and isolated. One scenario should not depend on the state left by another.
@@ -16,6 +16,28 @@ For each step in feature file, there will be corresponding method in Step Defini
 TestRunner is a junit file. Cucumber internally folllws junit.
 
 If scenario is not given properly in feature file and you implement methods in step definition, it will throw error.
+
+## Listeners:
+In Cucumber using TestNG runner, each scenario is considered a @Test.
+So just create a class implementing ITestListener and override the methods.
+Then add the @Listeners(TestListener.class) over the @CucumberOptions.
+
+## Parallel:
+Running TestRunners as parallel:
+    If you have 2 TestRunner class, you can run both classes in parallel from testng.xml.
+Running Scenarios in parallel:
+    Inside TestRunner class:
+        @Override
+        @DataProvider(parallel = true)
+        public Object[][] scenarios() { return super.scenarios(); }
+
+scenarios method calls provideScenarios, which collects all feature files and scenarios discovered by Cucumber Engine with Cucumber Options and each scenario is made into an object array. We override it with parallel=true, to allow it to run multiple arrays.
+
+Here, Cucumber internally uses TestNG's @DataProvider mechanism to feed each scenario as a test case.
+
+For thread-count setting, Cucumber doesnt have its own settings for it, so it inherits TestNG settings, so you can mention it in testng.xml.
+    or you can add this in TestRunner class:
+        static { System.setProperty("dataproviderthreadcount", "3") }
 
 ### Development Workflow:
 Feature File -> Step Definition File -> TestRunner.
@@ -101,7 +123,7 @@ extends AbstractTestNGCucumberTests
 
 ## Scenario Outline:
 Similar to Scenario but must have Examples.
-Paramters must be "<username>".
+Parameters must be "<username>".
 
 Examples:
 |username|password|book|
@@ -181,7 +203,7 @@ For After, it is in reverse:
 ```
 
 @Before, @After,
-@BeforeStep and @AfterStep are used with Scenario class as paramter, which allows methods like:
+@BeforeStep and @AfterStep are used with Scenario class as parameter, which allows methods like:
 .getName(),
 
 .isFailed(),

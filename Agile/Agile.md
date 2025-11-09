@@ -6,8 +6,17 @@ Cons:
 Compromise of quality.
 
 ## What is Agile?
-Agile is an appraoch that divides work into phases, emphasizing **continous delivery and improvement**. The Agile methodology benefits teams by enabling adaptive planning, rapid execution, and ongoing evaluation, leading to more responsive and successful outcomes.
+Agile is an approach that divides work into phases, emphasizing **continous delivery and improvement**. The Agile methodology benefits teams by enabling adaptive planning, rapid execution, and ongoing evaluation, leading to more responsive and successful outcomes.
 Major players are Scrum and Kanban.
+
+Continuous Integration:
+    New code changes are built, tested and merged into main branch.
+Continuous Delivery:
+    Ensures that code that passed CI are ready for Delivery. Like building a docker image and pushing to container registry.
+    If it's automatically deployed, it is Continuous Deployment.
+Testing is done in both CI and CD:
+    CI: unit or integration testing, smoke.
+    CD: performance testing, system testing.
 
 ### Agile ceremonies
 Sprint planning - capacity planning, story estimation
@@ -32,12 +41,13 @@ Iteration based. To achieve iteration, we use sprints (like 3 weeks or more or l
 Small functionality will be shown to client during each iteration.
 
 #### PI(Program Increment) planning in scrum
-6hrs of meeting. 6 months of release.
+6hrs of meeting. 6 months of release. (typically occurs every 8-12 weeks).
 PI -> Deciding on the prioritized feature/epic. There will n number of user stories under it, eg. Design registration form. (subtask)
 They will add these features to **Release back log.**
 A large scale planning event with Client, all stakeholders.
 Sprint team names will be like unicorn, lion etc.
 All sprint teams will be having their breakout session, in this they will decide which feature should be added to which iteration.
+AgileReleaseTrain (ART), is a collection of multiple Agile teams.
 
 #### Scrum Lifecycle
 Product back log -> contains all features.
@@ -109,6 +119,10 @@ Both Search Books and Catalog are one Epic. (allows to search books)
 ![Jira Board, Sprint team works on 5 stories in 1st week](image-5.png)
 If Dev1 completes a story in 2 days, he can assign a new story to himself and work on it.
 
+Backlog Grooming:
+Done for Product Backlog.
+eg. a story is of 13 points, so split it as 8 and 5 points to do in diff sprints.
+
 Story Estimates:
 Story Point: For each story we have in backlog, there will story point.
 How they come with story points?
@@ -116,7 +130,7 @@ Decided in sprint planning using Planning Poker. (Scrum master will run this pok
 Devs will give story point via fiboannic series. 1 - 8(max complexity).
 Each dev will write a point in poker card and reveal and explain the reason and will come up with a story point.
 
-1st day of every spring, there will be sprint planning and decide on who can take what.
+1st day of every sprint, there will be sprint planning and decide on who can take what.
 
 For next 2 weeks, every day will have STAND UP. Devs will answer questions like What they worked on? What they will do today? Are there any block that will prevent them from doing it today?
 

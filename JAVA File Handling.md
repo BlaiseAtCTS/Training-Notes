@@ -82,3 +82,10 @@ Mvn: jackson
 ObjectMapper objectMapper = new ObjectMapper();
 Person person = objectMapper.readValue(file, Person.class); -> map json to pojo class.
 ```
+
+## Deserialization and Serialization:
+Deserialization: Json -> Java Object
+Serialization: Java Object -> Json
+
+## TypeReference:
+TypeReference<>() {} -> 

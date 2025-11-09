@@ -45,8 +45,13 @@ So, Integer.valueOf(scanner.nextLine()) --> string to int
 
 ### String:
 string.equals(), string.split(" ") -> returns primitive array of text split whenever it meet " ".
-string.CharAt(index), string.length(), string.toCharArray() --> cant iterate string directly, needs to be an array or iteratable type.
+string.CharAt(index), string.length(), string.toCharArray() --> cant iterate string directly, needs to be an array or iterable type.
 string.toUpperCase(), toLowerCase(), string.substring(7, 12), string.substring(7) --> start index, string.concat("!!") --> append to string, string.trim() --> trims edges
+
+car.compareTo("Volvi"); -> returns int.
+    0 if equal
+    greater than 0 if lexicographically greater.
+    less than 0 if lexicographically lower.
 
 string += "world" --> appends
 string.matches(regex) --> checkks if the entire string matches regex pattern. .contains wont work with regex.
@@ -55,7 +60,7 @@ String regex = ".*[^a-zA-Z].*";
 string.indexOf("World") --> returns -1 if not found, can do ("World", 6) --> will check for that word after index 6, .lastIndexOf("World") --> last occurence of the word
 string.equals("World") --> returns boolean, equalsIgnoreCase("World")
 string.contains("World") --> returns boolean
-string.replace("old_word", "new_word")
+string.replace("old_word", "new_word") -> destructive, changes all occurance
 
 ### Array:
 ```
@@ -63,13 +68,16 @@ int[] array = new int[5]
 array[0] = 10
 array.length --> property
 int[] array = {1, 2, 3}
-list.add(0, "A"); --> like addFirst() but addFirst only works on Java 21+
 ```
 
 ### ArrayList:
 Part of collections framework like linkedlist etc. (learn about access speed, insertion/deletion speed, size). ArrayList using Array underneath or vice versa?
 Collections Hierarchy: https://techvidvan.com/tutorials/wp-content/uploads/sites/2/2020/03/collection-framework-hierarchy-in-java.jpg
 
+```
+list.add(0, "A"); --> like addFirst() but addFirst only works on Java 21+
+list.remove(0); --> like removeFirst()
+```
 ```
 list.size()
 ArrayList<String> list = new ArrayList<>(Arrays.asList("Apple", "Banana", "Cherry"));
@@ -99,6 +107,7 @@ System.out.println(name.equals(name2)) --> String has equals method which check 
 ```
 ArrayList<String> sortList = new ArrayList<>();
 Collections.sort(sortList);
+list.stream().sorted(Comparator.reverseOrder()).toList();
 ```
 
 #### Methods:
@@ -127,10 +136,10 @@ public class RegisterSteps {
 ```
 
 #### Order of initialization:
-Instance field : 
-    Initialized automatically when a object is created.
 Static field:
     Initialized once when class is loaded.
+Instance field : 
+    Initialized automatically when a object is created.
 Constructor:
     Runs after instance fields are initialized.
 Methods;
@@ -253,6 +262,9 @@ public static void method(Interface interface) {
     
 }
 ```
+
+### Narrowing Typecasting:
+https://www.bing.com/search?pglt=2083&q=Java+typecasting+from+higher+to+lower&cvid=d9b672c033a349fb965f5fe621ffb192&gs_lcrp=EgRlZGdlKgYIABBFGDkyBggAEEUYOTIGCAEQABhAMgYIAhAAGEAyBggDEAAYQDIGCAQQABhAMgYIBRAAGEAyBggGEAAYQDIGCAcQABhAMgYICBAAGEAyCAgJEOkHGPxV0gEJMTEzMzJqMGoxqAIAsAIA&FORM=ANNAB1&PC=U531
 
 ### abstract class:
 Can create a object for this. (new)
@@ -386,6 +398,7 @@ long - .count
 T - .reduce(accumulator, Binary operator)
 
 numList.stream().sorted().toList() --> stream() & sorted() returns Stream<T>
+numList.stream().sorted(Comparator.reverseOrder()).toList();
 
 Function interface (FI):
 R - apply(T) -> takes one function input and returns result of the function.
@@ -439,3 +452,29 @@ You have to typecase like:
 Dog d = (Dog) a;
 
 ## Method level should be initialized:
+
+## Parameterized Constructor:
+If parent class has only parameterized constructor, then when you make an object of child class, you need to send arguments to the child constructor and call parent class's parameterized constructor with it. Otherwise, it will compiler error.
+
+## Design Patterns:
+Singleton
+Factory
+Immutable - Collections.unmodifiableList(list);
+
+## Nested Class:
+```
+class Outer {
+    static class StaticNested {
+        void display() {
+            System.out.println("Static nested class method.");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Outer.StaticNested nested = new Outer.StaticNested();
+        nested.display();
+    }
+}
+```

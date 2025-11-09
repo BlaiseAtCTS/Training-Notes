@@ -34,10 +34,10 @@ Dog d = (Dog) a;
 *A WebDriverWait object is initialized with a specific WebDriver instance (It is linked to that Session ID).
 *So, if you do driver.quit() in 1st example scenario and use the same wait in 2nd example scenario, you will get NoSuchSessionException.
 
-### Selenium Architecture.
+### Selenium Architecture:
 A driver like JDBC driver.
 To automate functional testing.
-Test suite - will automatically run and test the product whenever there is a release. (Smoke test as a suite)
+Test suite - Collection of test cases. will automatically run and test the product whenever there is a release. (Smoke test as a suite, Login Suite with valid and invalid login test cases)
 If 90% of test cases pass, they can release the build.
 Can be used to automate things, like submit timesheet.
 Multiple programming lang.
@@ -48,6 +48,8 @@ Grid (Distributed execution) Eg. running test cases parallely instead of running
 
 ## Webdriver - Interface:
 There is a driver for each browser.
+    Selenium WebDriver cant directly talk to Browser, it needs an intermediary, that is Driver eg.ChromeDriver.
+    ![Selenium Components](image-49.png)
 ChromeDriver will have chrome packages.
 WebDriver driver = new ChromeDriver();
 driver.get("localhost")
@@ -55,7 +57,16 @@ sout > driver.getTitle()
 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5))
 
 ## Locators: to select each element in a web page.
-There are 7-8 locators.
+There are 8 locators:
+id, name, className, tagName, linkText, partialLinkText, xpath, cssSelector
+
+There are 14 WebElement methods:
+getText, getAttribute, getTagName, getCssValue("color"),
+click, sendKeys, clear, submit,
+isDiplayed, isEnabled, isSelected,
+getLocation, getSize, getReact,
+getDomAttribute, getDomProperty, getAriaRole, getAccessibleName.
+
 By.id() -> this is a locator
 Static and Dynamic selectors / Attribute and Property selectors.
 findElements() -> select elements.
@@ -88,9 +99,22 @@ File file = new File("./image.png");
 File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 FileHandler.copy(screenshot, file);
 ```
+```
+byte[] screenshot = ((TakeScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+String b64screenshot = Base64.getEncoder().encodeToString(screenshot);
+```
+```
+String screenshot = ((TakeScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+```
 
-### WindowHandler:
-String - driver.windowHandle()
+### WindowHandler and Driver methods:
+String - driver.getWindowHandle()
+Set - driver.getWindowHandles() -> IDs of all open windows/tabs
+    Selenium wont switch to newly opened tab automatically. We have to get all windowHandles and switch to it.
+driver.switchTo().window(handle)
+driver.switchTo().newWindow(WindowType.TAB) / WindowType.WINDOW
+
+driver.manage().window().getSize() / setSize(new Dimension(800, 600))
 
 ### 1st Commands:
 findElement(By.id())
@@ -103,7 +127,7 @@ By.linkText()
 By.partialLinkText()
 
 ### 2nd Commands:
-(By.className()).getAttribute() -> html attribute's value
+(By.className()).getAttribute("class") -> html attribute's value
 (By.className()).getCssValue() -> css attribute's value
 Rectangle - (By.className()).getRect()
 (By.className()).clear() -> clears written text
@@ -111,12 +135,13 @@ Rectangle - (By.className()).getRect()
 (By.className()).getText()
 
 #### Location:
-Dimension - (By.className()).getSize() -> can print dimension: (width, height)
+Dimension - (By.className()).getSize() -> can print dimension: (width, height) (height=50, width=150)
 dimension.getHeight()
 dimension.getWidth()
-Point - (By.className()).getLocation()
-point.getX()
+Point - (By.className()).getLocation() (x=100, y=200)
+point.getX() 
 point.getY()
+Rectangle - getRect() (x=100, y=200, height=50, width=150)
 
 Store all values in select tags.
 optionsList = driver.findElements(By.tagName("select"));
@@ -145,25 +170,40 @@ alert.sendKeys();
 ## Actions Class (Left Click, Right Click, Drag & Drop, Offset):
 Action - interface
 Actions - class
+
+pause(Duration.ofSeconds(5))
+    Eg: actions.moveToElement(elem1)
+               .pause()
+               .click(elem2)
+               .perform();
+build() -> compiles all actions into a single executable action.
+perform()
 ```
 Actions actions = new Actions(driver);
+actions.click(btnElement).perform()
 actions.contextClick(btnElement).perform(); -> left click
 actions.doubleClick(btnElement).perform(); -> double click
-builder.dragAndDrop(from, to).perform(); -> from and to are WebElement
+actions.clickAndHold(btnElement).perform();
+actions.release(btnElement).perform();
+
+actions.moveToElement(btnElement).perform(); -> moves mouse to the middle of the element.
+actions.moveToElement(btnElement, xOffset, yOffset).perform(); -> move mouse to an offset from the middle of the element.
+actions.moveByOffset(x, y).perform(); -> moves mouse by certain offset from curr position.
+actions.dragAndDrop(from, to).perform(); -> from and to are WebElement
+actions.dragAndDropBy(from, xOffset,yOffset).perform();
 
 Action action = actions.dragAndDrop(from, to).build();
-        action.perform();
-
-builder.dragAndDropBy(from, xOffset,yOffset).perform();
+action.perform();
 ```
 https://www.toolsqa.com/selenium-webdriver/drag-and-drop-in-selenium/
 
 ```
 actions.click(dateInput).sendKeys(formattedDate).perform();
+actions.sendKeys(dateInput, formattedData).perform();
 ```
 ### Keyboard Input:
+keyDown, keyUp
 ```
-Actions actions = new Actions(driver);
 actions.keyDown(Keys.CONTROL).sendKeys("a").keyUp(Keys.CONTROL).perform(); // Select all text
 ```
 
@@ -186,7 +226,11 @@ ByValue
 (least used) ByIndex
 
 ## JavaScriptExecuter:
-Used to select/send date.
+Used in times when locators dont work.
+    Like when you click a hamburger menu and it covers the element that you need to click
+        here, selenium locators wont work, but js will work.
+
+Can be used to select/send date.
 
 WebElement traveldate = driver.findElement(By.id("traveldate"));
 JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -197,16 +241,20 @@ If you want to enter value in JavascriptExecutor, you send it using arguments[]:
 WebElement emailElem = driver.findElement(By.xpath("//input[@id='email']"));
 exec.executeScript("arguments[0].value=arguments[1]", emailElem, "george@gmail.com");
 ```
+
 ### Trigger on change event using JavaScript Executor:
 ```
 JavascriptExecutor js = (JavascriptExecutor) driver;
 js.executeScript("arguments[0].value = arguments[1]", dobElement, dob);
+    makes an anonymous function with the arguments passed as parameters and executes script inside.
 
 // JavascriptExecutor to invoke the calculateAge method, which is present in the onchange event of Dob on the web page for calculating the age.
-js.executeScript("arguments[0].dispatchEvent(new Event('change'))", dobElement);
+js.executeScript("arguments[0].dispatchEvent(new Event('change'))", dobElement); -> if html doesnt have inline handler.
 (or)
-js.executeScript("arguments[0].onchange()", dobElement);
+js.executeScript("arguments[0].onchange()", dobElement); -> if html has inline handler.
+    if you do just onchange, you r just referring to the function.
 ```
+
 ### Another way to click button, when normal click doesn't work:
 ```
 executor.executeScript("arguments[0].scrollIntoView(true);", DriverManager.get().findElement(registerButton));
@@ -224,6 +272,12 @@ Advantages of using TestEngine over JUnit.
 @BeforeTest - initialize WebDriver (void init()).
 @AfterTest - (void tearDown()). Works like finally, driver.quit().
 
+## Static vs Dynamic locator:
+Static: if id or other attribute remains the same between page loads.
+Dynamic: the opposite.
+    We can use partial matches or relative xpath to locate.
+        cssSelector("input[id^='user']") -> any id that starts with user.
+
 ## Dynamic Locator:
 When you dont have any id attribute for an element, we can use XPath.
 
@@ -237,6 +291,7 @@ css(id, class, attribute, inner text)
 
 ## Maximize window:
 driver.manage().window().maximize();
+fullscreen, minimize.
 
 ## Wait Strategies:
 ![Wait Strategies](image-10.png)
@@ -244,6 +299,7 @@ driver.manage().window().maximize();
 Selenium checks the currently displayed DOM, if DOM elements change (like ad banner which changes in flipkart base don time). then selenium wont be able to identify the element.
 
 The default page load timeout in selenium webdriver is 300 seconds. If page doesnt get load in this time, it will throw TimeoutException.
+    This is for page to load, there is no default wait time to locate elements.
 
 ```
 Thread.sleep(1000) -> Not related to selenium (don't use, stops all browser loadings, so dynamic data wont be fetched)
@@ -290,7 +346,7 @@ Allows you to define polling intervals and timeouts.
 Can ignore specific 
 
 ```
-Wait fluentWait = new FluentWait<WebDriver> (driver). withTimeout(Duration.ofSeconds(10)).pollingEvery(Duration.ofSeconds(4)).ignoring(Exception.class);
+Wait<WebDriver> fluentWait = new FluentWait<> (driver). withTimeout(Duration.ofSeconds(10)).pollingEvery(Duration.ofSeconds(4)).ignoring(NoSuchElementException.class);
 ```
 Eg. element is enabled after 5 seconds.
 0th sec -> element not enabled
@@ -303,7 +359,7 @@ Its like a execution framework.
 Has annotations like @Test, @BeforeTest, @AfterTest;
 @Test can be used in class level -> test suite(group of test cases)
 
-![Test NG](image-12.png)
+![Test NG](image-12.png) *interview*
 
 ### Order of Execution:
 @BeforeSuite -> called only once (can be many classes)
@@ -363,7 +419,7 @@ Don't write XPath with attributes which change (dynamic).
 //label[text() = 'Enter your full Name'] (or) //label[. = 'Enter your full Name']
     //label[contains(text(), 'Enter your full')]
 //label[starts-with(text(), 'Enter')]
-//button[normalize-space() = 'Refer the video'] -> Trim the space in front end end of text in the element like ' Refer the video '.
+//button[normalize-space(.) = 'Refer the video'] -> Trim the space in front end end of text in the element like ' Refer the video '.
 
 ### Parent, Child, Ancestor(parent's parent):
 #### Child to Parent:
@@ -373,8 +429,8 @@ Don't write XPath with attributes which change (dynamic).
 </div>
 ```
 //strong[.='Sign Up']/parent::a (or)
-    //strong[.='Sign Up']/parent::a[@class='parent-class'] (or Shortcut)
-    //strong[.='Sign Up']/..
+//strong[.='Sign Up']/parent::a[@class='parent-class'] (or Shortcut)
+//strong[.='Sign Up']/..
 
 #### Parent to Child:
 //div[@class='navbar-item']/div/a (or Shortcut)
@@ -424,6 +480,10 @@ following and preceding will select all following and preceding elements.
 //*[local-name()='svg'][@class='global-nav_logo']
 local-name is like input type but can be used for any name in the html.
 
+div, input etc are from xhtml XML vocabulary.
+svg is from svg XML vocabulary.
+so //svg wont work as it searches svg is xhtml, so you need to find it by how browser knows it as like: {http://example.com/pic}svg -> svg is the local name.
+
 ## Test Validation Assertion:
 Always user Assert in interviews.
 
@@ -444,7 +504,6 @@ assertNull()
 assertNotNull()
 assertSame(ins.size(), 3); -> checks with ==
 assertNotSame()
-assertNotNull()
 fail(message) -> all asserts can have message that will be displayed when assert fails.
 
 ## Report:
@@ -491,7 +550,7 @@ int totalCells = sheet.getRow(1).getLastCellNum(); -> gets last cell number(star
 
 XSSFRow currentRow = sheet.getRow(1) -> gets entire first row
 XSSFCell cell = currentRow.getCell(1); -> getCell() is 0 based.
-cell.toString();
+cell.toString() (or) cell.getStringCellValue()
 
 workbook.close();
 file.close();
@@ -525,7 +584,7 @@ file.close();
 ```
 By userName = By.name("username");
 ```
-Here, for each element that accesses the userName, it will use a separate thread, which can cause overload. so you private static final (make username to USERNAME, convention to show that it is final)
+Here, for each element that accesses the userName, it will use a separate thread, which can cause overload. so you use private static final (make username to USERNAME, convention to show that it is final)
 
 ![Random](image-16.png)
 
@@ -596,11 +655,14 @@ paramter tag inside suite tag is global.
 paramter tag inside test tag is only for that test tag (Browser driver can be passed here).
 ![two test in xml](image-22.png)
 
-### Parellel:
+### Parallel:
 Can be given in test tag (test level) or in suite tag (suite level).
-suite name="Suite" parallel="tests" -> targets test tags below suite tag.
+suite name="Suite" parallel="tests" thread-count="2" -> targets test tags below suite tag.
 
 test thread-count="5" parallel="classes" name="Test1" -> targets class tags below test tag.
+
+parallel can be mentioned in suite and test tag.
+parallel = "tests" or "classes" or "methods"
 
 ### DataProvider:
 ![Data Provider](image-23.png)
@@ -629,7 +691,7 @@ Instead of,
 @Test(dataProvider="getData")
 public void login(String name, String id) {}
 we can use,
-public void login(String data[]) { sout(data[0]) }
+<!-- public void login(String data[]) { sout(data[0]) } -->
 
 ### Heirarchy:
 beforeSuite
@@ -645,6 +707,11 @@ afterClass
 afterTest
 
 afterSuite -> executed if all other before it is successful.
+
+## Listeners:
+Create a class which implements ITestListener.
+Override methods like onTestStart(ITestResult result), onTestSuccess, onTestFailure, onTestSkipped.
+Add @Listeners(TestListener.class) above the class where you have mentioned @Test.
 
 ## POM:
 https://youtu.be/9xRN-rANwKw?si=1MH5feZFBsiKHitq
@@ -703,8 +770,21 @@ NoSuchElementException
     when wrong element id is given and selenium is unable to find it. Eg. By.xpath("//button[@value='Searchabc']") -> Searchabc doesn't exist.
 JavascriptException
     eg. when syntax inside executeScript is wrong.
+NoSuchSessionException
+    eg. when you quit the driver but not the wait.
+SessionNotCreatedException
+    eg. when driver executable version incompatible with browser or selenium version.
+    if you dont initialize driver and try driver methods, you will get NullPointerException.
+NoSuchWindowException, NoAlertPresentException, NoSuchFrameException
+    eq. driver.switchTo().alert() (or) .window() (or) .frame()
+ElementNotInteractableException
+    eg. trying to sendKeys in unintractable inputs.
+ElementClickInterceptedException
+    eg. Like when you click a hamburger menu and it covers the element that you need to click.
 TimeOutException
-    if time runs out.
+    if time runs out for page load. You can set custom page load using driver.manage().timeouts().pageLoadTimeout(Duration);
+IllegalStateException
+    eg. when you use ChromeDriver without System.setProperty("", "")
 
 ## Read properties file:
 ```
@@ -736,3 +816,45 @@ public class ReadPropertiesFile {
 ```
 
 ## Data Table:
+```
+Scenario: Correct non-zero number of books found by author
+Given I have the following books in the store
+| title | author |
+| The Devil in the White City | Erik Larson |
+| The Lion, the Witch and the Wardrobe | C.S. Lewis |
+| In the Garden of Beasts | Erik Larson |
+```
+```
+@Given("I have the following books in the store")
+public void iHaveTheFollowingBooksInTheStore(DataTable table) {
+    List<List<String>> rows = table.asLists(String.class);
+    for(List<String> cols : rows) {
+        sout(cols.get(0), cols.get(1));
+    }
+    (or)
+    List<Map<String, String>> rows = table.asMaps(String.class, String.class);
+    for(Map<String, String> cols : rows) {
+        sout(cols.get("title"), cols.get("author"))
+    }
+}
+```
+Data is stored like this for Map:
+[
+    // Element 0 (First Row)
+    {
+        "title": "The Devil in the White City",
+        "author": "Erik Larson"
+    },
+
+    // Element 1 (Second Row)
+    {
+        "title": "The Lion, the Witch and the Wardrobe",
+        "author": "C.S. Lewis"
+    },
+]
+
+Data is stored like this for List:
+[
+    // First Row
+    ["The Devil in the White City", "Erik Larson"]
+]

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite" parallel="tests" thread-count="1">
+    <parameter name="quitOrNot" value="false"/>
+    <test verbose="2" preserve-order="true" name="C:/Users/2446107/Documents/Notes/Day 1/Spring/hashCode CustomComp/src/test/java/TestNG">
+        <groups>
+            <run>
+                <include name="smoke"></include>
+            </run>
+        </groups>
+        <classes>
+            <class name="TestNG.testNG">
+                <methods>
+                    <include name="OpenBrowser"/>
+                    <include name="commands1"/>
+                    <include name="tearDown" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
