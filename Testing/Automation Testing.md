@@ -712,6 +712,12 @@ afterSuite -> executed if all other before it is successful.
 Create a class which implements ITestListener.
 Override methods like onTestStart(ITestResult result), onTestSuccess, onTestFailure, onTestSkipped.
 Add @Listeners(TestListener.class) above the class where you have mentioned @Test.
+testng.xml:
+```
+<listeners>
+    <listener class-name=""></listener>
+</listeners>
+```
 
 ## POM:
 https://youtu.be/9xRN-rANwKw?si=1MH5feZFBsiKHitq

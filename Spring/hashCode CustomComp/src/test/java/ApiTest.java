@@ -1,5 +1,6 @@
 import io.cucumber.cienvironment.internal.com.eclipsesource.json.JsonObject;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBodyExtractionOptions;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
@@ -66,7 +67,8 @@ public class ApiTest {
                 .header("Content-Type","application/json")
                 .body("{ \"title\": \"The Son\"}")
                 .when()
-                .pathParams("id", 1)
+                .pathParam("id", 1)
+                .queryParam("name", "don")
                 .patch("/posts/{id}")
                 .then()
                 .log().body()
